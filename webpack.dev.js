@@ -11,6 +11,7 @@ module.exports = merge(common, {
         path.join(path.join(__dirname, 'src/index.js'))
     ],
   },
+  devtool: 'inline-source-map',
   mode: 'development',
   module: {
     rules: [
@@ -18,11 +19,62 @@ module.exports = merge(common, {
         test: /\.js$/,
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader',
+          loader: 'babel-loader?cacheDirectory',
           options: {
             presets: ['@babel/preset-env']
           }
         }
+      },
+      {
+        test: /\.(png|jpg|jpeg|gif)$/,
+        use: 'file-loader'
+      },
+      {
+        test: /\.css$/i,
+        use: [
+          'style-loader',
+          'css-loader',
+          {
+            loader: 'postcss-loader',
+            options: {
+              postcssOptions: {
+                plugins: [
+                  [
+                    'postcss-preset-env',
+                    {
+                      // 其他选项
+                    },
+                  ],
+                ],
+              },
+            },
+          },
+          
+        ],
+      },
+      {
+        test: /\.less$/,
+        // 增加 'less-loader' ，注意顺序
+        use: [
+          'style-loader',
+          'css-loader',
+          {
+            loader: 'postcss-loader',
+            options: {
+              postcssOptions: {
+                plugins: [
+                  [
+                    'postcss-preset-env',
+                    {
+                      // 其他选项
+                    },
+                  ],
+                ],
+              },
+            },
+          },
+          'less-loader',
+        ],
       }
     ]  
   },
